@@ -12,7 +12,7 @@ class HTMLNode:
         attr_string = ""
         if self.props:
             for key, value in self.props.items():
-                attr_string += f" {key}={value}"
+                attr_string += f' {key}="{value}"'
         return attr_string
 
     def __repr__(self) -> str:
