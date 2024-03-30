@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -28,3 +28,24 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(' style="border: solid 1px red; color: red"', attrs)
         self.assertEqual(' href="https://google.com" target="_blank"', attrs2)
         self.assertEqual("", attrs3)
+
+    def test_to_html(self):
+        leafNode = LeafNode(
+            "p", "Hello World!", {"style": "border: solid 1px red; color: red"}
+        )
+        leafNode2 = LeafNode("p", "I have no attrs")
+        leafNode3 = LeafNode(None, "I am a raw node", None)
+
+        self.assertEqual(
+            '<p style="border: solid 1px red; color: red">Hello World!</p>',
+            leafNode.to_html(),
+        )
+        self.assertEqual(
+            "<p>I have no attrs</p>",
+            leafNode2.to_html(),
+        )
+        self.assertEqual("I am a raw node", leafNode3.to_html())
+
+
+if __name__ == "__main__":
+    unittest.main()
