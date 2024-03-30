@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -29,7 +29,7 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(' href="https://google.com" target="_blank"', attrs2)
         self.assertEqual("", attrs3)
 
-    def test_to_html(self):
+    def test_leaf_to_html(self):
         leafNode = LeafNode(
             "p", "Hello World!", {"style": "border: solid 1px red; color: red"}
         )
@@ -45,6 +45,47 @@ class TestHTMLNode(unittest.TestCase):
             leafNode2.to_html(),
         )
         self.assertEqual("I am a raw node", leafNode3.to_html())
+
+    def test_parent_to_html(self):
+        parentNode = ParentNode(
+            "p",
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text"),
+            ],
+        )
+
+        self.assertEqual(
+            "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>",
+            parentNode.to_html(),
+        )
+
+    def test_nested_parents(self):
+        parentNode = ParentNode(
+            "div",
+            [
+                ParentNode(
+                    "div",
+                    [
+                        LeafNode("p", "Hello world!"),
+                        LeafNode(
+                            "a",
+                            "I am a link",
+                            {"href": "https://google.com", "target": "_blank"},
+                        ),
+                        ParentNode("div", [LeafNode("p", "Im so deep bro!")]),
+                    ],
+                ),
+                LeafNode(None, "Raw Text, LFG!!"),
+            ],
+        )
+
+        self.assertEqual(
+            '<div><div><p>Hello world!</p><a href="https://google.com" target="_blank">I am a link</a><div><p>Im so deep bro!</p></div></div>Raw Text, LFG!!</div>',
+            parentNode.to_html(),
+        )
 
 
 if __name__ == "__main__":
