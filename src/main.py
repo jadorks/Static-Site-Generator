@@ -1,6 +1,22 @@
 import os
+import pathlib
 import shutil
 from block_markdown import markdown_to_html_node
+
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    dir_path_entries = os.listdir(dir_path_content)
+
+    for entry in dir_path_entries:
+        path = os.path.join(dir_path_content, entry)
+
+        if os.path.isfile(path):
+            if pathlib.Path(path).suffix == ".md":
+                dst = os.path.join(dest_dir_path, f"{pathlib.Path(path).stem}.html")
+                generate_page(path, template_path, dst)
+        else:
+            dst = os.path.join(dest_dir_path, entry)
+            generate_pages_recursive(path, template_path, dst)
 
 
 def generate_page(from_path, template_path, dest_path):
@@ -62,7 +78,7 @@ def copy_source_to_destination(source, destination):
 
 def main():
     copy_source_to_destination("static", "public")
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("content", "template.html", "public")
 
 
 main()
