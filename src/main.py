@@ -1,6 +1,13 @@
 import os
 import shutil
 
+def extract_title(markdown):
+    blocks = markdown.split("\n")
+    for block in blocks:
+        if block.startswith("# "):
+            return block.lstrip("# ").strip()
+    raise ValueError("No header title")
+
 def copy_source_to_destination(source, destination):
     if not os.path.exists(source):
         raise ValueError("Source directory does not exist")
